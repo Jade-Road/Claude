@@ -71,6 +71,6 @@ If none, state "None."
 ### After Generating
 
 Ask the user:
-1. "Want me to save this to a session log file?" — If yes, save to `~/.claude/sessions/{{YYYY-MM-DD}}-{{session-name}}.md`
+1. "Want me to save this to a session log file?" — If yes, save to `./docs/sessions/{{YYYY-MM-DD}}-{{session-name}}.md` relative to the current project root. Create the `docs/sessions/` directory if it doesn't exist. If not in a project (e.g., working from `~/.claude`), fall back to `~/.claude/sessions/`.
 2. "Any items here that should be saved to memory?" — If yes, create or update the appropriate memory files.
 3. "Any backlog items to add to a project tracker?" — If yes, update the relevant project's agent memory.
