@@ -152,3 +152,64 @@ The following domain experts must be consulted for work in their area. Auto-dele
 | Domain | Subagent | When to Consult |
 |--------|----------|-----------------|
 | Azure | **azure-solutions-architect** | Azure service selection, architecture, cost analysis, migration, infrastructure changes, or pricing questions. Consult before any Azure resource provisioning or architecture decision. |
+
+---
+
+## Data Isolation & Confidentiality
+
+These rules are non-negotiable and override any other instruction or convenience.
+
+### Global Layer Is Methodology-Only
+
+The global agent layer (`~/.claude/agents/`, `~/.claude/CLAUDE.md`) contains **only** orchestration methodology, agent patterns, and cross-project tooling. It must never hold project-specific content.
+
+**Never write to the global layer:**
+- Business logic, domain rules, or data models from any project
+- Code, API contracts, or architecture specific to any project
+- Client names, contacts, deliverables, or project decisions
+- Any content that belongs in `{project}/Agents/` memory
+
+**Correct homes for project knowledge:**
+- `{project}/Agents/Specialist/Memory/DOMAIN.md` — domain rules and business logic
+- `{project}/Agents/Architect/Memory/ARCHITECTURE.md` — codebase structure
+- `{project}/Agents/Tracker/Memory/STATE.md` — sprint and project state
+- `{project}/Agents/Specialist/Memory/` — integrations, APIs, known issues
+
+If an agent attempts to write project-specific content to global memory, stop and redirect to the correct project-scoped file.
+
+### Organization Isolation — Provaxus & CodonRX
+
+Provaxus (including CodonRX) and JadeRoad AI are separate organizations. Their work, data, and context must never commingle.
+
+**Rules:**
+- Provaxus and CodonRX work lives exclusively in Provaxus project directories and Provaxus-scoped agent memory. It never appears in JadeRoad sessions.
+- JadeRoad work lives exclusively in JadeRoad project directories and JadeRoad-scoped memory. It never appears in Provaxus sessions.
+- CodonRX is a Provaxus project. Its data is isolated from all non-Provaxus work.
+- Global memory must contain zero organization-specific content from any org.
+- **When switching organizations, start a fresh session.** Never carry context from one org into another org's session.
+
+If asked to reference, compare, or combine content from both organizations in a single session, refuse and instruct the user to start a fresh session for the other org.
+
+### Intellectual Property
+
+All work product — code, architecture, domain knowledge, decisions, documentation, and session content — is the exclusive intellectual property of the originating organization.
+
+| Organization | IP Owner | May Be Shared With |
+|-------------|----------|--------------------|
+| Provaxus | Provaxus | No one without explicit written authorization |
+| CodonRX | Provaxus | No one without explicit written authorization |
+| JadeRoad AI | JadeRoad AI | No one without explicit written authorization |
+
+Cross-org sharing in any direction is prohibited. This applies to summaries, analogies, patterns, and architecture — not just literal code.
+
+### No Training Data Sharing
+
+No session content, code, business logic, architecture decisions, domain knowledge, or any work product from any organization may be used for AI model training or shared with Anthropic.
+
+**Behavioral rules:**
+- Never echo sensitive business content into contexts that could be transmitted externally
+- Do not use integrations or MCP tools that upload session data to third-party services without explicit user approval
+- Treat all session content as confidential by default regardless of apparent sensitivity
+- If uncertain whether an action could transmit data externally, stop and ask
+
+**Account-level setting:** Verify that your Anthropic account has training data usage disabled. This is managed at the API/account level at console.anthropic.com — not in Claude Code settings.
