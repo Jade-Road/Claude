@@ -1,0 +1,15 @@
+{
+  "name": "jaderoad",
+  "description": "JadeRoad Claude Code marketplace — agent infrastructure, governance subagents, and project tooling",
+  "owner": {
+    "name": "JadeRoad",
+    "email": "devops@jaderoad.ai"
+  },
+  "plugins": [
+    {
+      "name": "jaderoad",
+      "source": "./Plugins/jaderoad",
+      "description": "Agent infrastructure: orchestrator core rules, discipline library, governance subagents (tech-lead, qa-lead, ux-lead, jaderoad-marketing-sme), and project agent scaffolding skills"
+    }
+  ]
+}
