@@ -1,0 +1,10 @@
+{
+  "name": "jaderoad",
+  "org_name": "JadeRoad",
+  "github_org": "JadeRoad-AI",
+  "description": "JadeRoad agent infrastructure — core rules, discipline standards, and specialist subagents for AI-assisted work",
+  "version": "1.0.0",
+  "author": {
+    "name": "JadeRoad"
+  }
+}
