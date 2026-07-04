@@ -135,7 +135,7 @@ When initializing project infrastructure, configure these pre-approved read perm
 
 These paths are org-managed read-only resources. `/{ORG_ID}:start-session` configures this automatically at project init. To apply to an existing project, run `/{ORG_ID}:set-project-disciplines`.
 
-**Note on coexistence with Provaxus plugin:** JadeRoad infrastructure is isolated under `~/.claude/agents/{ORG_ID}/`. Do not edit or reference files at `~/.claude/agents/core-rules.md` or `~/.claude/agents/disciplines/` — those paths belong to the Provaxus plugin.
+**Note on coexistence with other org plugins:** This org's infrastructure is isolated under `~/.claude/agents/{ORG_ID}/`. Do not edit or reference files belonging to other org plugins — each plugin owns its own namespace. Shared infrastructure (CI, deployment tooling) belongs in the infrastructure context, never embedded in org-specific plugin files.
 
 ---
 

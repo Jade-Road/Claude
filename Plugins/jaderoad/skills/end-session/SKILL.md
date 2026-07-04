@@ -284,10 +284,15 @@ Report: "Full workflow complete — pushed to main."
 
 ### Step 7: Commit Agent Files to Project-Agents
 
-If the directory `{src_root}/Project-Agents` does not exist: report "Agent repo not found at `{src_root}/Project-Agents` — skipping commit. Run `/{ORG_ID}:start-session` to set up." Proceed to Step 8.
+If the directory `{src_root}/Project-Agents-{ORG_ID}` does not exist: report "Agent repo not found at `{src_root}/Project-Agents-{ORG_ID}` — skipping commit. Run `/{ORG_ID}:start-session` to set up." Proceed to Step 8.
 
 ```
-cd "{src_root}/Project-Agents"
+cd "{src_root}/Project-Agents-{ORG_ID}"
+# Safety guard: verify remote before operating
+REMOTE_URL=$(git remote get-url origin 2>/dev/null)
+if [[ "$REMOTE_URL" != *"{GITHUB_ORG}/Project-Agents"* ]]; then
+  echo "ABORT: {src_root}/Project-Agents-{ORG_ID} tracks '$REMOTE_URL' — not {GITHUB_ORG}/Project-Agents. Skipping agent file commit."
+else
 git pull --rebase
 git status
 ```
@@ -301,6 +306,7 @@ git commit -m "agent: end-session — {YYYY-MM-DD HH:mm} ({project-name})
 
 {N decisions, M backlog items, K blocker changes}"
 git push
+fi
 ```
 
 Report: "Committed N file(s) with session memory updates." or "No changes to commit."
@@ -327,7 +333,7 @@ Use the timestamp acquired in Step 2. Create `docs/session-summaries/` if it doe
 
 ### Step 9: Update Global State
 
-Detect the orchestrator name: check both the {ORG_NAME} and Provaxus managed sections of `~/.claude/CLAUDE.md`. Extract the first `# {Name} — Lead Orchestrator` heading from either managed section. Fall back to scanning `~/.claude/agents/` for a subdirectory containing `Memory/STATE.md` but no `IDENTITY.md`. Fall back to `Operator` if neither yields a name.
+Detect the orchestrator name: read the managed section of `~/.claude/CLAUDE.md` between `<!-- @{ORG_ID}:init-agent-infrastructure@` and `<!-- @{ORG_ID}:init-agent-infrastructure-end -->`. Extract the first `# {Name} — Lead Orchestrator` heading. If not found, scan all `<!-- @*:init-agent-infrastructure@` managed sections for that heading. Fall back to scanning `~/.claude/agents/` for a subdirectory containing `Memory/STATE.md` but no `IDENTITY.md`. Fall back to `Operator` if neither yields a name.
 
 If `~/.claude/agents/{OrchestratorName}/Memory/STATE.md` exists:
 - Update Active Projects row for this project: set "Last Session" to today, update "Current Focus"
