@@ -88,7 +88,7 @@ Detect whether {ORG_NAME} global infrastructure has been deployed. Check in orde
 1. `~/.claude/CLAUDE.md` contains `<!-- @{ORG_ID}:init-agent-infrastructure@` or `<!-- @{ORG_ID}:init-core-agents@` markers
 2. `~/.claude/agents/{ORG_ID}/core-rules.md` exists
 
-Note: `~/.claude/agents/core-rules.md` (without the `{ORG_ID}/` prefix) belongs to the Provaxus plugin — its presence does NOT satisfy this check.
+Note: `~/.claude/agents/core-rules.md` (without the `{ORG_ID}/` prefix) is an unnamespaced path that may belong to another org's plugin — its presence does NOT satisfy this check.
 
 If **any** signal is found, infrastructure is deployed — skip to Step 0c.
 
@@ -472,7 +472,7 @@ Read this before writing any tests for this project.
 
 Detect `SRC_ROOT` — two levels above project root (e.g., `~/src` from `~/src/{ORG_NAME}/ProjectNova`).
 
-The shared repo always clones to `{SRC_ROOT}/Project-Agents/`.
+The shared repo always clones to `{SRC_ROOT}/Project-Agents-{ORG_ID}/`.
 
 **Check if repo exists:**
 ```
@@ -486,8 +486,8 @@ gh repo view {GITHUB_ORG}/Project-Agents 2>&1
 - Exit non-zero + "403" / "Must have admin rights" → stop with auth guidance.
 
 **Clone or update:**
-- Missing: `git clone https://github.com/{GITHUB_ORG}/Project-Agents.git "{SRC_ROOT}/Project-Agents"`
-- Exists: `cd "{SRC_ROOT}/Project-Agents" && git pull`
+- Missing: `git clone https://github.com/{GITHUB_ORG}/Project-Agents.git "{SRC_ROOT}/Project-Agents-{ORG_ID}"`
+- Exists: verify remote URL first — run `git -C "{SRC_ROOT}/Project-Agents-{ORG_ID}" remote get-url origin`. If it does not contain `{GITHUB_ORG}/Project-Agents`, abort: "Project-Agents-{ORG_ID} exists but tracks a different remote — remove or rename the directory and re-run." If correct, run `git -C "{SRC_ROOT}/Project-Agents-{ORG_ID}" pull`.
 
 #### Step 8c: Scaffold Project Folder in Agent Repo
 
@@ -586,7 +586,7 @@ Write to the project root:
 
 #### Step 12: Register in Global State
 
-Detect the orchestrator name: check both the {ORG_NAME} and Provaxus managed sections of `~/.claude/CLAUDE.md`. Extract the first `# {Name} — Lead Orchestrator` heading from either managed section. Fall back to scanning `~/.claude/agents/` for a subdirectory containing `Memory/STATE.md` but no `IDENTITY.md`. Fall back to `Operator` if neither yields a name.
+Detect the orchestrator name: read the managed section of `~/.claude/CLAUDE.md` between `<!-- @{ORG_ID}:init-agent-infrastructure@` and `<!-- @{ORG_ID}:init-agent-infrastructure-end -->`. Extract the first `# {Name} — Lead Orchestrator` heading. If not found, scan all `<!-- @*:init-agent-infrastructure@` managed sections for that heading. Fall back to scanning `~/.claude/agents/` for a subdirectory containing `Memory/STATE.md` but no `IDENTITY.md`. Fall back to `Operator` if neither yields a name.
 
 If `~/.claude/agents/{OrchestratorName}/Memory/STATE.md` exists:
 - Add row: project name, directory, "Active", current focus, client ID, agent path
